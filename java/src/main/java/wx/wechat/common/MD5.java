@@ -48,7 +48,7 @@ public class MD5 {
         String resultString = null;
         try {
             resultString = origin;
-            MessageDigest md = MessageDigest.getInstance("wx.wechat.common.MD5");
+            MessageDigest md = MessageDigest.getInstance("MD5");
             resultString = byteArrayToHexString(md.digest(resultString.getBytes()));
         } catch (Exception e) {
             e.printStackTrace();

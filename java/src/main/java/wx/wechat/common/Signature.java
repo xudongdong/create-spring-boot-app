@@ -40,7 +40,7 @@ public class Signature {
             sb.append(arrayToSort[i]);
         }
         String result = sb.toString();
-        result += "key=" + Configure.getKey();
+        result += "key=" + Configure.mchKey;
         result = MD5.MD5Encode(result).toUpperCase();
         return result;
     }
@@ -49,6 +49,45 @@ public class Signature {
      * @param map
      * @return
      * @function 从Map中获取签名
+     * 假设传送的参数如下：
+     * <p>
+     * appid： wxd930ea5d5a258f4f
+     * <p>
+     * mch_id： 10000100
+     * <p>
+     * device_info： 1000
+     * <p>
+     * body： test
+     * <p>
+     * nonce_str： ibuaiVcKdpRxkhJA
+     * <p>
+     * 第一步：对参数按照key=value的格式，并按照参数名ASCII字典序排序如下：
+     * <p>
+     * stringA="appid=wxd930ea5d5a258f4f&body=test&device_info=1000&mch_id=10000100&nonce_str=ibuaiVcKdpRxkhJA";
+     * <p>
+     * 第二步：拼接API密钥：
+     * <p>
+     * stringSignTemp="stringA&key=192006250b4c09247ec02edce69f6a2d"
+     * <p>
+     * sign=MD5(stringSignTemp).toUpperCase()="9A0A8659F005D6984697E2CA0A9CF3B7"
+     * <p>
+     * 最终得到最终发送的数据：
+     * <p>
+     * <xml>
+     * <p>
+     * <appid>wxd930ea5d5a258f4f</appid>
+     * <p>
+     * <mch_id>10000100</mch_id>
+     * <p>
+     * <device_info>1000<device_info>
+     * <p>
+     * <body>test</body>
+     * <p>
+     * <nonce_str>ibuaiVcKdpRxkhJA</nonce_str>
+     * <p>
+     * <sign>9A0A8659F005D6984697E2CA0A9CF3B7</sign>
+     * <p>
+     * <xml>
      */
     public static String getSign(Map<String, Object> map) {
         ArrayList<String> list = new ArrayList<String>();
@@ -65,7 +104,7 @@ public class Signature {
             sb.append(arrayToSort[i]);
         }
         String result = sb.toString();
-        result += "key=" + Configure.getKey();
+        result += "key=" + Configure.mchKey;
         //Util.log("Sign Before wx.wechat.common.MD5:" + result);
         result = MD5.MD5Encode(result).toUpperCase();
         //Util.log("Sign Result:" + result);

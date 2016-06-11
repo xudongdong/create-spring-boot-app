@@ -58,4 +58,4 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-/src/main/java/wx/wechat/common/Configure.java
+# 敏感配置文件不放入Configure中
