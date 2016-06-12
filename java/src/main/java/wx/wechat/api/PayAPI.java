@@ -34,13 +34,12 @@ public class PayAPI extends API {
      * @function 用于JSAPI的预先统一下单接口
      */
     @SneakyThrows
-    @RequestMapping("prepay")
     public Map<String, Object> prepay(
-            @RequestParam(value = "body", required = true) String body,
-            @RequestParam(value = "out_trade_no", required = true) String out_trade_no,
-            @RequestParam(value = "total_fee", required = true) Integer total_fee,
-            @RequestParam(value = "openid", required = false) String openid,
-            @RequestParam(value = "attach", required = false, defaultValue = "附加信息") String attach) {
+            String body,
+            String out_trade_no,
+            Integer total_fee,
+            String openid,
+            String attach) {
 
         //最终返回的结果
         Map<String, Object> result = new HashMap<>();
@@ -117,8 +116,7 @@ public class PayAPI extends API {
      * <transaction_id><![CDATA[4009292001201606127153599312]]></transaction_id>
      * </xml>
      */
-    @RequestMapping("notify")
-    public String wx_notify(@RequestBody String body) {
+    public String wx_notify(String body) {
 
 //        System.out.println(body);
 
