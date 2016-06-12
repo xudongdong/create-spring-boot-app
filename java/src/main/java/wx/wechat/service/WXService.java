@@ -4,17 +4,16 @@ package wx.wechat.service;
  * Created by apple on 16/6/7.
  */
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.squareup.okhttp.*;
 import lombok.SneakyThrows;
-import wx.wechat.common.Signature;
+import wx.wechat.common.signature.Signature;
 import wx.wechat.utils.XMLUtils;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @function 封装一些常用的方法
@@ -22,7 +21,7 @@ import java.util.Objects;
 public class WXService {
 
 
-    public String API_WEIXIN_HOST = "api.weixin.qq.com";
+    public final String API_WEIXIN_HOST = "api.weixin.qq.com";
 
     private final OkHttpClient client = new OkHttpClient();
 
@@ -45,12 +44,17 @@ public class WXService {
         //构建请求路径
         HttpUrl.Builder httpUrlBuilder = new HttpUrl.Builder()
                 .scheme("https")
-                .host(host)
-                .addPathSegment(path);
+                .host(host);
+
+        //将Path重新解构依次赋值给URL
+        Arrays.stream(path.split("/")).forEach(s -> {
+            httpUrlBuilder.addPathSegment(s);
+        });
+
 
         //添加查询参数
         params.forEach((k, v) -> {
-            httpUrlBuilder.addQueryParameter(k, v);
+            httpUrlBuilder.addEncodedQueryParameter(k, v);
         });
 
         //构建请求
@@ -58,6 +62,8 @@ public class WXService {
                 .url(httpUrlBuilder.build())
                 .get()
                 .build();
+
+//        System.out.println(request);
 
         //发起请求
         Response response = client.newCall(request).execute();
@@ -79,8 +85,8 @@ public class WXService {
     @SneakyThrows
     protected Map<String, Object> postByXML(String url, Map requestData) {
 
-        //首先获取签名
-        String signature = Signature.getSign(requestData);
+        //首先获取签名,注意,这里的签名用的是微信支付的签名
+        String signature = Signature.getSign4Pay(requestData);
 
         //签名添加到请求数据中
         requestData.put("sign", signature);

@@ -70,6 +70,42 @@ export default class Model {
     }
 
     /**
+     * @function 以扁平化方式发起请求
+     * @param host
+     * @param path
+     * @param requestData
+     * @param action
+     */
+    getWithQueryParams({host=Model.BASE_URL, path="/", requestData={}, action="GET"}) {
+
+        //待拼接的查询字符串
+        let queryString = "";
+
+        //拼接查询字符串
+        for (let key in requestData) {
+            queryString += `${key}=${requestData[key]}&`
+        }
+
+        //将字符串链接
+        const packagedRequestURL = `${host}${path}?${queryString}action=${action}`;
+
+        console.log(packagedRequestURL);
+
+        //执行fetch方法发起请求
+        return fetch(packagedRequestURL, {
+            mode: "cors", headers: {}
+        })
+            .then(this.checkStatus, (error)=> {
+                console.log(error);
+                return error;
+            })
+            .then(this.parseJSON, (error)=> {
+                return error;
+            });
+
+    }
+
+    /**
      * @function 利用get方法发起请求
      * @param path 请求的路径(包括路径参数)
      * @param requestData 请求的参数
@@ -137,7 +173,7 @@ export default class Model {
 
 
 //基础的URL
-Model.BASE_URL = "http://115.28.12.137:8080";
+Model.BASE_URL = "http://mp.dragon.live-forest.com";
 
 // Model.BASE_URL = "http://localhost:8080";
 

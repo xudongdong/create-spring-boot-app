@@ -1,6 +1,8 @@
-package wx.wechat.common;
+package wx.wechat.common.signature;
 
 import org.xml.sax.SAXException;
+import wx.wechat.common.Configure;
+import wx.wechat.common.XMLParser;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
@@ -15,21 +17,16 @@ import java.util.Map;
  * Time: 15:23
  */
 public class Signature {
+
     /**
-     * 签名算法
-     *
-     * @param o 要参与签名的数据对象
-     * @return 签名
-     * @throws IllegalAccessException
+     * @region 以下签名算法用于微信公众号管理
      */
-    public static String getSign(Object o) throws IllegalAccessException {
+    public static String getSign4MP(Map<String, Object> map) {
+
         ArrayList<String> list = new ArrayList<String>();
-        Class cls = o.getClass();
-        Field[] fields = cls.getDeclaredFields();
-        for (Field f : fields) {
-            f.setAccessible(true);
-            if (f.get(o) != null && f.get(o) != "") {
-                list.add(f.getName() + "=" + f.get(o) + "&");
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            if (entry.getValue() != "") {
+                list.add(entry.getKey() + "=" + entry.getValue() + "&");
             }
         }
         int size = list.size();
@@ -40,10 +37,48 @@ public class Signature {
             sb.append(arrayToSort[i]);
         }
         String result = sb.toString();
-        result += "key=" + Configure.mchKey;
-        result = MD5.MD5Encode(result).toUpperCase();
+
+        //移除最后一个&
+        result = result.substring(0, result.length() - 1);
+
+        result = SHA1.encode(result);
+
         return result;
     }
+
+    /**
+     * @region 以下为用于微信支付的签名计算
+     */
+
+    /**
+     * 签名算法
+     *
+     * @param o 要参与签名的数据对象
+     * @return 签名
+     * @throws IllegalAccessException
+     */
+//    public static String getSign4Pay(Object o) throws IllegalAccessException {
+//        ArrayList<String> list = new ArrayList<String>();
+//        Class cls = o.getClass();
+//        Field[] fields = cls.getDeclaredFields();
+//        for (Field f : fields) {
+//            f.setAccessible(true);
+//            if (f.get(o) != null && f.get(o) != "") {
+//                list.add(f.getName() + "=" + f.get(o) + "&");
+//            }
+//        }
+//        int size = list.size();
+//        String[] arrayToSort = list.toArray(new String[size]);
+//        Arrays.sort(arrayToSort, String.CASE_INSENSITIVE_ORDER);
+//        StringBuilder sb = new StringBuilder();
+//        for (int i = 0; i < size; i++) {
+//            sb.append(arrayToSort[i]);
+//        }
+//        String result = sb.toString();
+//        result += "key=" + Configure.mchKey;
+//        result = MD5.MD5Encode(result).toUpperCase();
+//        return result;
+//    }
 
     /**
      * @param map
@@ -89,7 +124,7 @@ public class Signature {
      * <p>
      * <xml>
      */
-    public static String getSign(Map<String, Object> map) {
+    public static String getSign4Pay(Map<String, Object> map) {
         ArrayList<String> list = new ArrayList<String>();
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             if (entry.getValue() != "") {
@@ -105,7 +140,7 @@ public class Signature {
         }
         String result = sb.toString();
         result += "key=" + Configure.mchKey;
-        //Util.log("Sign Before wx.wechat.common.MD5:" + result);
+        //Util.log("Sign Before wx.wechat.common.signature.MD5:" + result);
         result = MD5.MD5Encode(result).toUpperCase();
         //Util.log("Sign Result:" + result);
         return result;
@@ -125,7 +160,7 @@ public class Signature {
         //清掉返回数据对象里面的Sign数据（不能把这个数据也加进去进行签名），然后用签名算法进行签名
         map.put("sign", "");
         //将API返回的数据根据用签名算法进行计算新的签名，用来跟API返回的签名进行比较
-        return Signature.getSign(map);
+        return Signature.getSign4Pay(map);
     }
 
     /**
@@ -148,7 +183,7 @@ public class Signature {
         //清掉返回数据对象里面的Sign数据（不能把这个数据也加进去进行签名），然后用签名算法进行签名
         map.put("sign", "");
         //将API返回的数据根据用签名算法进行计算新的签名，用来跟API返回的签名进行比较
-        String signForAPIResponse = Signature.getSign(map);
+        String signForAPIResponse = Signature.getSign4Pay(map);
 
         if (!signForAPIResponse.equals(signFromAPIResponse)) {
             //签名验不过，表示这个API返回的数据有可能已经被篡改了

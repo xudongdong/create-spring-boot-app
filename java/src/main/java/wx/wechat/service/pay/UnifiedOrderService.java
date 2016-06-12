@@ -128,6 +128,27 @@ public class UnifiedOrderService extends WXService {
     }
 
     /**
+     * @return
+     * @function 利用JSAPI在微信公众号内下单
+     * @url
+     */
+    public Map<String, Object> jsApiOrder(String openid) {
+
+        Map requestData = requestDataGenerator();
+
+        //设置交易类型为JSAPI
+        requestData.put("trade_type", "JSAPI");
+
+        //设置当前用户的openid
+        requestData.put("openid", openid);
+
+//        System.out.println(requestData);
+
+        //调用请求并且返回参数
+        return this.postByXML("https://api.mch.weixin.qq.com/pay/unifiedorder", requestData);
+    }
+
+    /**
      * @region 私有方法区域
      */
     /**
@@ -155,6 +176,10 @@ public class UnifiedOrderService extends WXService {
         requestData.put("spbill_create_ip", spbill_create_ip);
 
         requestData.put("trade_type", trade_type);
+
+        requestData.put("device_info", "WEB");
+
+        requestData.put("attach",attach);
 
         return requestData;
     }

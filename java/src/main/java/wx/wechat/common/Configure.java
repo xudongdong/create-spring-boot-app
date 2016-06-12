@@ -16,8 +16,11 @@ public class Configure {
     // 收到API的返回的时候也要用这个key来对返回的数据算下签名，跟API的Sign数据进行比较，如果值不一致，有可能数据被第三方给篡改
 
 
-    //微信分配的公众号ID（开通公众号之后可以获取到）
+    //微信分配的公众号ID（开通公众号之后可以获取到）d678efh567hg6787
     public static String appID = "";
+
+    //微信分配的公众号密钥
+    public static String appSecret = "";
 
     //微信的内置的token
     public static String appToken = "";
@@ -29,7 +32,7 @@ public class Configure {
     public static String mchKey = "";
 
     //接收微信支付异步通知回调地址，通知url必须为直接可访问的url，不能携带参数。
-    public static String wxpay_notify_url = "http://221.226.86.124:84/CompanyShow/Welcome.aspx";
+    public static String wxpay_notify_url = "http://mp.dragon.live-forest.com/pay/notify";
 
     //受理模式下给子商户分配的子商户号
     public static String subMchID = "";

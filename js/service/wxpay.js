@@ -4,7 +4,7 @@
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
 
-import Model from "./model";
+import Model from "../models/model";
 
 /**
  * @function 用于微信支付类
@@ -18,38 +18,47 @@ export default class WXPay extends Model {
 
         super();
         //预付费的API
-        this.fetchPrepayIdUrl = "/mp/prepay";
+        this.fetchPrepayIdUrl = "/pay/prepay";
 
     }
 
     /**
      * @function 从远端获取预付费ID
+     * @param body
+     * @param out_trade_no
+     * @param total_fee
+     * @param openid 可选参数
+     * @returns {Promise.<TResult>|*} Promise 用于下一步处理
      */
     fetchPrepayId({
         body = "商品详情",
         out_trade_no = "1415659990",
         total_fee = 1,
-        openid = undefined
+        openid = undefined,
+        attach //附加信息
     }) {
+
         if (openid) {
             //如果存在openid,则是以JSAPI方式调用
-            this.get({
-                url: this.fetchPrepayIdUrl,
+            return this.getWithQueryParams({
+                path: this.fetchPrepayIdUrl,
                 requestData: {
                     body,
                     out_trade_no,
                     total_fee,
-                    openid
+                    openid,
+                    attach
                 }
             });
         } else {
             //否则是以APP方式调用
-            this.get({
-                url: this.fetchPrepayIdUrl,
+            return this.getWithQueryParams({
+                path: this.fetchPrepayIdUrl,
                 requestData: {
                     body,
                     out_trade_no,
-                    total_fee
+                    total_fee,
+                    attach
                 }
             });
 
@@ -69,31 +78,39 @@ export default class WXPay extends Model {
      * @param paySign
      */
     doSyncPay({
-        appId="wx9b17162ad8941a7c",
-        timeStamp="1465379322",
-        nonceStr="6x5zpnoohrkl6vffsasg",
-        package_r="prepay_id=wx2016060817484234f56bb6df0899433128",
+        appId="wx7d0444df2763bf91",
+        timeStamp="1465698294",
+        nonceStr="2g1w8kvb5lamqwfx6j8o",
+        package_r="prepay_id=wx2016061210245447b57ae3b30364645260",
         signType="MD5",
-        paySign="4470184DC86AEFBE38E300E2B6A19575"
-    }) {
+        paySign="01B98B973451A1AA83EC062F2F46AB75"
+    }, cb) {
 
+        //调用微信支付的接口
         WeixinJSBridge.invoke(
             'getBrandWCPayRequest', {
-                appId,
-                timeStamp,
-                nonceStr,
-                "package":package_r,
-                signType,
-                paySign
+                "appId": appId,
+                "timeStamp": timeStamp,
+                "nonceStr": nonceStr,
+                "package": package_r,
+                "signType": signType,
+                "paySign": paySign
             },
             function (res) {
 
+                //打印支付信息
                 console.log(res);
 
-                alert(res.return_msg);
-
                 if (res.err_msg == "get_brand_wcpay_request:ok") {
-                }     // 使用以上方式判断前端返回,微信团队郑重提示:res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                    //支付成功
+                    cb(res);
+
+                } else {
+
+                    // alert(JSON.stringify(res));
+
+                    alert("您取消了支付!");
+                }
             }
         )
         ;

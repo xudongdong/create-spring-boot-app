@@ -1,4 +1,4 @@
-package wx.wechat.common;
+package wx.wechat.common.signature;
 
 import java.security.MessageDigest;
 
