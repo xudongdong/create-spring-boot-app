@@ -1,6 +1,7 @@
 package wx.wechat.service.pay;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.experimental.Builder;
 import wx.wechat.common.Configure;
@@ -14,6 +15,7 @@ import java.util.Map;
  * Created by apple on 16/6/7.
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 @Builder(builderMethodName = "hiddenBuilder")
 public class UnifiedOrderService extends WXService {
 
@@ -179,7 +181,7 @@ public class UnifiedOrderService extends WXService {
 
         requestData.put("device_info", "WEB");
 
-        requestData.put("attach",attach);
+        requestData.put("attach", attach);
 
         return requestData;
     }

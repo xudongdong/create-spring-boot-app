@@ -5,10 +5,6 @@ package wx.wechat.api;
  */
 
 import lombok.SneakyThrows;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import wx.wechat.common.Configure;
 import wx.wechat.common.RandomStringGenerator;
 import wx.wechat.common.signature.Signature;
@@ -46,7 +42,7 @@ public class PayAPI extends API {
 
         //调用统一下单服务
         UnifiedOrderService unifiedOrderService = UnifiedOrderService
-                .builder(body, out_trade_no, total_fee, getIp("127.0.0.1"))
+                .builder(body, out_trade_no, total_fee, this.getIp())
                 .attach(attach)
                 .build();
 
@@ -131,23 +127,6 @@ public class PayAPI extends API {
         payedOrderService.updateOrderState(parsedMap.get("attach"), "1", "1", parsedMap.get("TransactionId"));
 
         return "success";
-    }
-
-    /**
-     * @param str
-     * @return
-     * @function 获取IP地址
-     */
-    private String getIp(String str) {
-
-        //判断是否存在 ',' ,如果存在则分割
-        if (str.contains(",")) {
-
-            return str.split(",")[0];
-
-        } else {
-            return str;
-        }
     }
 
 }

@@ -1,15 +1,12 @@
 package wx.wechat.api;
 
 import lombok.Getter;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
-import wx.ds.string.StringGenerator;
 import wx.wechat.common.Configure;
+import wx.wechat.common.RandomStringGenerator;
 import wx.wechat.common.signature.SHA1;
 import wx.wechat.common.signature.Signature;
 import wx.wechat.service.mp.MPService;
+import wx.wechat.service.mp.MessageService;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -32,6 +29,7 @@ public class MPAPI extends API {
      * @return
      * @function 验证消息的确来自微信服务器
      */
+//    @RequestMapping(value = "portal", method = {RequestMethod.GET})
     public String portal(
             String signature,
             String timestamp,
@@ -56,6 +54,39 @@ public class MPAPI extends API {
     }
 
     /**
+     * @param body
+     * @return
+     * @function 开发者模式, 负责进行消息处理
+     */
+//    @RequestMapping(value = "portal", method = {RequestMethod.POST})
+    public String portal(
+            /*@RequestBody(required = false)*/ String body) {
+
+        MessageService messageService = new MessageService(body);
+
+        //目前只返回电子报名状态
+        MessageService.News news = new MessageService.News(
+                "建筑业“营改增”下造价实操暨合同争议实战培训邀请",
+                "建筑业“营改增”后5月1日已经开始实施，江苏省营改增招投标接口5月23日正式使用，参加的讲座一场接一场，一线各岗位进入实操阶段, 您能从容应对吗？是否有如下问题： 营改增下的计价依据、方式、方法怎么选择和操作？对原有造价模式到底有多大冲击？",
+                "http://o8jh4kn64.bkt.clouddn.com/%E6%9C%AA%E6%A0%87%E9%A2%98-6.jpg",
+                "http://mp.weixin.qq.com/s?__biz=MjM5MjI4NTg3MA==&mid=100000004&idx=1&sn=91cd8dd172f18b73c31e82172fc45099#rd"
+        );
+
+        return messageService.generateNewsResponse(Arrays.asList(new MessageService.News[]{news}));
+    }
+
+    /**
+     * @param body
+     * @function 开发者模式, 负责菜单创建
+     */
+//    @RequestMapping(value = "menu", method = {RequestMethod.POST})
+    public boolean menu(/*@RequestBody(required = false)*/ String body) {
+
+        return true;
+
+    }
+
+    /**
      * @param code  回调带入的编码
      * @param state 回调带入的状态
      * @return
@@ -63,13 +94,13 @@ public class MPAPI extends API {
      * @Test 授权的测试地址
      * https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7d0444df2763bf91&redirect_uri=http%3a%2f%2fmp.dragon.live-forest.com%2fmp%2fauth&response_type=code&scope=snsapi_base&state=eapply
      */
-    public ModelAndView auth(
+    public /*ModelAndView*/ void auth(
             String code, String state
     ) {
 
         if (code == null || state == null) {
             //如果传入参数为空,则默认跳转到空页面
-            return new ModelAndView("redirect:" + "http://baidu.com");
+//            return new ModelAndView("redirect:" + "http://baidu.com");
         }
 
         //初始化MPService
@@ -87,7 +118,7 @@ public class MPAPI extends API {
         String redirectUrl = this.stateMapGenerator().get(state) + "?openid=" + openid;
 
         //执行跳转操作
-        return new ModelAndView("redirect:" + redirectUrl);
+//        return new ModelAndView("redirect:" + redirectUrl);
 
     }
 
@@ -111,7 +142,7 @@ public class MPAPI extends API {
         String apiTicket = mpService.fetchTicketByAccessToken(accessToken, "jsapi").get("ticket");
 
         //获取随机字符串
-        String nonceStr = StringGenerator.getRandomString(10);
+        String nonceStr = RandomStringGenerator.getRandomStringByLength(10);
 
         //获取当前时间戳
         Long timeStamp = Instant.now().getEpochSecond();

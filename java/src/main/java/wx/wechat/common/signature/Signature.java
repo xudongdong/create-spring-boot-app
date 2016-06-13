@@ -2,11 +2,10 @@ package wx.wechat.common.signature;
 
 import org.xml.sax.SAXException;
 import wx.wechat.common.Configure;
-import wx.wechat.common.XMLParser;
+import wx.wechat.utils.XMLUtils;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -156,7 +155,7 @@ public class Signature {
      * @throws SAXException
      */
     public static String getSignFromResponseString(String responseString) throws IOException, SAXException, ParserConfigurationException {
-        Map<String, Object> map = XMLParser.getMapFromXML(responseString);
+        Map<String, Object> map = XMLUtils.XML2Map(responseString);
         //清掉返回数据对象里面的Sign数据（不能把这个数据也加进去进行签名），然后用签名算法进行签名
         map.put("sign", "");
         //将API返回的数据根据用签名算法进行计算新的签名，用来跟API返回的签名进行比较
@@ -174,7 +173,7 @@ public class Signature {
      */
     public static boolean checkIsSignValidFromResponseString(String responseString) throws ParserConfigurationException, IOException, SAXException {
 
-        Map<String, Object> map = XMLParser.getMapFromXML(responseString);
+        Map<String, Object> map = XMLUtils.XML2Map(responseString);
 
         String signFromAPIResponse = map.get("sign").toString();
         if (signFromAPIResponse == "" || signFromAPIResponse == null) {
