@@ -331,3 +331,46 @@ jssdkConfig() {
         return "success";
     }
 ```
+
+# WebUI:页面呈现于效果实现
+
+## Boilerplate:基本页面模板
+
+## Scroll Animation:滚动效果
+
+# JSSDK:其他JSSDK常用操作
+
+## Share:分享
+
+### 不使用额外API设置分享的标题、图片与链接
+
+> [原文地址](https://github.com/navyxie/weixin_js)
+
+微信在6.0.2及以上版本已经回收客户端自定分享的权限，而是以授权api的形式开放出来。有时候我们只想简单地自定义分享的title,分享的图片以及分享的链接时，而不想或者缺乏资源去接入微信api的时候该怎么实现呢？
+
+1.设置分享title:动态改变document.title值即可:
+
+```
+document.title = 'test'
+```
+
+2.设置分享图片：在页面隐藏一张尺寸大于290*290的图（图片需要容器包裹，设置容器css属性display:none即可）:
+
+```
+<div style="display:none"><img src="share.jpg" /></div>
+```
+
+3.设置分享的链接：动态修改document.documentURI的值即可（safari下，document.documentURI为只读属性，可借助history.pushState ）
+
+```
+//android:
+document.documentURI = "http://www.navyxie.com"；//经测试wechat6.3.13版本下此方法已失效，可使用同下IOS的方法自定义。
+//ios:
+window.history.pushState("weixin-share-url", "weixinshare", "http://www.navyxie.com");//只可设置同域链接
+```
+
+以上方法即可在微信6.0.2+版本自定义分享内容，不需额外引入微信的js文件
+
+
+
+
