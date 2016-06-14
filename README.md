@@ -10,6 +10,13 @@
   - [统一下单获取预支付代码](#%E7%BB%9F%E4%B8%80%E4%B8%8B%E5%8D%95%E8%8E%B7%E5%8F%96%E9%A2%84%E6%94%AF%E4%BB%98%E4%BB%A3%E7%A0%81)
   - [微信内H5支付](#%E5%BE%AE%E4%BF%A1%E5%86%85h5%E6%94%AF%E4%BB%98)
   - [支付结果回调](#%E6%94%AF%E4%BB%98%E7%BB%93%E6%9E%9C%E5%9B%9E%E8%B0%83)
+- [WebUI:页面呈现于效果实现](#webui%E9%A1%B5%E9%9D%A2%E5%91%88%E7%8E%B0%E4%BA%8E%E6%95%88%E6%9E%9C%E5%AE%9E%E7%8E%B0)
+  - [Boilerplate:基本页面模板](#boilerplate%E5%9F%BA%E6%9C%AC%E9%A1%B5%E9%9D%A2%E6%A8%A1%E6%9D%BF)
+    - [防止下拉"露底"](#%E9%98%B2%E6%AD%A2%E4%B8%8B%E6%8B%89%E9%9C%B2%E5%BA%95)
+  - [Scroll Animation:滚动效果](#scroll-animation%E6%BB%9A%E5%8A%A8%E6%95%88%E6%9E%9C)
+- [JSSDK:其他JSSDK常用操作](#jssdk%E5%85%B6%E4%BB%96jssdk%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C)
+  - [Share:分享](#share%E5%88%86%E4%BA%AB)
+    - [不使用额外API设置分享的标题、图片与链接](#%E4%B8%8D%E4%BD%BF%E7%94%A8%E9%A2%9D%E5%A4%96api%E8%AE%BE%E7%BD%AE%E5%88%86%E4%BA%AB%E7%9A%84%E6%A0%87%E9%A2%98%E3%80%81%E5%9B%BE%E7%89%87%E4%B8%8E%E9%93%BE%E6%8E%A5)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -335,6 +342,65 @@ jssdkConfig() {
 # WebUI:页面呈现于效果实现
 
 ## Boilerplate:基本页面模板
+
+### 防止下拉"露底"
+
+在微信中，随便打开一个H5页面，用力往下扯的时候，页面上方会出现“黑底”，黑底上有一行诸如`网页由game.weixin.qq.com提供`的文字，有时候会很难看啊，如果需要避免这种下拉露底，一般来说有几种方式：
+
+（1）直接使用iScroll或者niceScroll托管滚动事件。
+
+（2）判断下拉
+
+可以参考类库[preventoverscrolljs](https://github.com/yuanzm/preventoverscrolljs)，引用组件支持下面两种方式：
+
+- clone之后直接拷贝引用`bin`文件夹下面的`preventoverscroll.min.js`
+- 从npm下载安装
+  - `npm install --save preventoverscrolljs`
+  - var PreventOverScroll = require('preventoverscrolljs');
+
+然后页面布局上设置一个包裹层：
+
+```
+<body id="wrapper">
+    <div id="container"></div>
+</body>
+```
+
+样式要写成这个样子：
+
+```
+html, body {
+  width: 100%;
+  height: 100%;
+}
+#container {
+	height: 100%;
+}
+```
+
+最后实例化组件：
+
+```
+var list = ['container'];
+var prevent = new PreventOverScroll({
+    list: list
+});
+```
+
+有时候还需要对Android或者iOS做一个区分：
+
+```
+var outer = (  isAndroid // do it yourself
+             ? 'wrapper'
+             : 'container' );
+var list = [outer];
+var prevent = new PreventOverScroll({
+    list: list
+});
+
+```
+
+
 
 ## Scroll Animation:滚动效果
 
