@@ -12,6 +12,7 @@
   - [支付结果回调](#%E6%94%AF%E4%BB%98%E7%BB%93%E6%9E%9C%E5%9B%9E%E8%B0%83)
 - [WebUI:页面呈现于效果实现](#webui%E9%A1%B5%E9%9D%A2%E5%91%88%E7%8E%B0%E4%BA%8E%E6%95%88%E6%9E%9C%E5%AE%9E%E7%8E%B0)
   - [Boilerplate:基本页面模板](#boilerplate%E5%9F%BA%E6%9C%AC%E9%A1%B5%E9%9D%A2%E6%A8%A1%E6%9D%BF)
+    - [提示跳转到浏览器打开](#%E6%8F%90%E7%A4%BA%E8%B7%B3%E8%BD%AC%E5%88%B0%E6%B5%8F%E8%A7%88%E5%99%A8%E6%89%93%E5%BC%80)
     - [防止下拉"露底"](#%E9%98%B2%E6%AD%A2%E4%B8%8B%E6%8B%89%E9%9C%B2%E5%BA%95)
   - [Scroll Animation:滚动效果](#scroll-animation%E6%BB%9A%E5%8A%A8%E6%95%88%E6%9E%9C)
 - [JSSDK:其他JSSDK常用操作](#jssdk%E5%85%B6%E4%BB%96jssdk%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C)
@@ -342,6 +343,159 @@ jssdkConfig() {
 # WebUI:页面呈现于效果实现
 
 ## Boilerplate:基本页面模板
+
+### 提示跳转到浏览器打开
+
+微信内页面对于链接跳转、应用下载等做了很多的限制，因此很多时候我们需要提示用户在右上角选择到浏览器中打开，基本效果如下图所示：
+
+- iOS
+
+![](http://dearb.u.qiniudn.com/QQ20131107164807.jpg)
+
+- Android
+
+![](http://d.16css.com/d/file/piaofu/201504/58ae7db94d79dca847d697559b1e38be.png)
+
+笔者在这里对二者的代码做了总结和调整，最后的代码为：
+
+- HTML
+```
+<div id='popweixin'>
+    <div class='tip top2bottom animate-delay-1'>
+        <div class="android" id="popweixin-android">
+        </div>
+        <div class="ios" id="popweixin-ios">
+            <span>如果无法点击下载,请点击右上角跳转按钮,选择"在Safari中打开"~</span>
+            <img src="http://7xiegq.com1.z0.glb.clouddn.com/weixin-tips-ios.png" alt="">
+        </div>
+    </div>
+</div>
+```
+
+- Style
+```
+<style>
+    #popweixin {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        position: fixed;
+        z-index: 1000;
+        background: rgba(0, 0, 0, .5);
+        top: 0;
+        left: 0;
+        display: none;
+        z-index: 999999;
+    }
+
+    #popweixin .tip {
+        height: 50%;
+        width: 100%;
+        background: none;
+        z-index: 1001;
+    }
+
+    .top2bottom {
+        -webkit-animation: top2bottom 1.2s ease;
+        -moz-animation: top2bottom 1.2s ease;
+        -o-animation: top2bottom 1.2s ease;
+        animation: top2bottom 1.2s ease;
+        -webkit-animation-fill-mode: backwards;
+        -moz-animation-fill-mode: backwards;
+        -o-animation-fill-mode: backwards;
+        animation-fill-mode: backwards
+    }
+
+    .animate-delay-1 {
+        -webkit-animation-delay: 1s;
+        -moz-animation-delay: 1s;
+        -o-animation-delay: 1s;
+        animation-delay: 1s
+    }
+
+    @-webkit-keyframes top2bottom {
+        0% {
+            -webkit-transform: translateY(-300px);
+            opacity: .6
+        }
+        100% {
+            -webkit-transform: translateY(0px);
+            opacity: 1
+        }
+    }
+
+    @keyframes top2bottom {
+        0% {
+            transform: translateY(-300px);
+            opacity: .6
+        }
+        100% {
+            transform: translateY(0px);
+            opacity: 1
+        }
+    }
+
+    #popweixin .tip .android {
+        height: 100%;
+        background: url("http://demo.16css.com/piaofu/906/live_weixin.png");
+        background-size: 100% 100%;
+        padding: 5px;
+        top: 10px;
+        display: none;
+    }
+
+    #popweixin .tip .ios {
+        height: 100%;
+        margin-top: 10%;
+        padding: 5%;
+    }
+
+    #popweixin .tip .ios span {
+        float: left;
+        color: white;
+        font-size: 25px;
+        line-height: 50px;
+        width: 65%;
+    }
+
+    #popweixin .tip .ios img {
+        float: right;
+        height: 45%;
+        width: 30%;
+    }
+
+</style>
+```
+
+- Script
+```
+<script>
+    //判断浏览器类型
+    var ua = navigator.userAgent.toLowerCase();
+
+    if (ua.match(/MicroMessenger/i) == "micromessenger") {
+
+        //如果是微信浏览器,则设置弹出层显示
+        document.getElementById("popweixin").style.display = "block";
+
+        if (/iphone|ipod/.test(ua)) {
+
+            //iOS微信
+            document.getElementById("popweixin-ios").style.display = "block";
+
+        } else {
+
+            // Android微信版本
+            document.getElementById("popweixin-android").style.display = "block";
+
+        }
+
+
+    }
+
+</script>
+```
+
 
 ### 防止下拉"露底"
 
