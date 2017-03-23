@@ -12,4 +12,4 @@
 hs_err_pid*
 /js/node_modules/
 
-/node_modules
+node_modules
