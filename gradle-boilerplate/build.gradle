@@ -16,152 +16,132 @@ buildscript {
     }
 }
 
-plugins {
-    id "io.spring.dependency-management" version "0.6.0.RELEASE"
-}
-
-// 插件
-apply plugin: 'java'
-apply plugin: 'application'
-apply plugin: "com.arenagod.gradle.MybatisGenerator"
-apply plugin: "idea"
-apply plugin: "jdepend"
-apply plugin: "spring-boot"
-
-apply plugin: 'propdeps'
-apply plugin: 'propdeps-maven'
-apply plugin: 'propdeps-idea'
-apply plugin: 'propdeps-eclipse'
-
-// 仓库
-repositories {
-
-    // 引入本地依赖
-    maven { url "file:lib/" }
-    mavenCentral()
-    jcenter()
-    maven { url 'http://repo.spring.io/snapshot' }
-    maven { url 'http://repo.spring.io/milestone' }
-    maven { url 'https://jitpack.io' }
-    maven { url 'http://repo.maven.apache.org/maven2' }
-
-}
-
-// 设置组名
-group = "wx.csba"
-
-// 设置命令行程序的主类
-mainClassName = "wx.csba.cli.Main"
-
-// 设置 Spring Boot 根类
-bootRepackage {
-    mainClass = 'wx.csba.webapp.SpringBootApplication'
-}
-
 ext {
     // 设置脚本地址
     gradleScriptDir = "${rootProject.projectDir}/gradle"
 
     // 设置版本号
-    springBootVersion = "1.4.0.RELEASE"
+    springBootVersion = "1.5.2.RELEASE"
 }
 
-// 设置源代码路径
-sourceSets {
-    main {
-        java {
-            srcDir "src/main/java"
+
+
+allprojects {
+
+    // 插件
+    apply plugin: 'java'
+    apply plugin: "spring-boot"
+    apply plugin: "com.arenagod.gradle.MybatisGenerator"
+    apply plugin: "idea"
+
+    // 仓库
+    repositories {
+
+        // 引入本地依赖
+        maven { url "file:" + rootProject.projectDir + "/lib/" }
+        mavenCentral()
+        jcenter()
+        maven { url 'http://repo.spring.io/snapshot' }
+        maven { url 'http://repo.spring.io/milestone' }
+        maven { url 'https://jitpack.io' }
+        maven { url 'http://repo.maven.apache.org/maven2' }
+
+    }
+
+    // 设置组名
+    group = "wx.csba"
+
+    // 设置源代码路径
+    sourceSets {
+        main {
+            java {
+                srcDir "src/main/java"
+            }
+            resources {
+                srcDir "src/main/resources"
+                srcDir "src/main/java"
+                exclude "**/*.java"
+            }
         }
-        resources {
-            srcDir "src/main/resources"
-            srcDir "src/main/java"
-            exclude "**/*.java"
+    }
+
+    // 编译兼容及目标版本
+    compileJava {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+        options*.compilerArgs = [
+                // 编译参数
+                // "-Xlint:deprecation",
+                "-Werror"
+        ]
+    }
+
+    // 测试兼容及目标版本
+    compileTestJava {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+        options*.compilerArgs = [
+                // 测试编译参数
+                "-parameters"
+        ]
+    }
+
+    // 依赖
+    dependencies {
+
+        // 通用依赖
+        compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.0-b01'
+        compile group: 'commons-io', name: 'commons-io', version: '2.4'
+        compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+
+        // 数据处理
+        compile "org.projectlombok:lombok:1.16.8"
+        compile group: "com.alibaba", name: "fastjson", version: "1.2.14"
+
+        // Spring Boot
+        compile(group: "org.springframework.boot", name: "spring-boot-starter-web", version: springBootVersion) {
+            exclude(module: 'spring-boot-starter-tomcat')
+            exclude group: "commons-logging", module: "commons-logging"
         }
+        compile group: "org.springframework.boot", name: "spring-boot-starter-jetty", version: springBootVersion
+        compile group: "org.springframework.boot", name: "spring-boot-starter-test", version: springBootVersion
+        compile group: "org.springframework.boot", name: "spring-boot-starter-jdbc", version: springBootVersion
+        compile group: "org.springframework.boot", name: "spring-boot-starter-aop", version: springBootVersion
+
+        // 日志记录
+        compile 'org.slf4j:slf4j-api:1.7.21'
+
+        // 测试驱动
+        testCompile 'junit:junit:4.12'
+        testCompile('org.springframework.boot:spring-boot-starter-test')
     }
 }
 
-// 编译兼容及目标版本
-compileJava {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-    options*.compilerArgs = [
-            // 编译参数
-            // "-Xlint:deprecation",
-            "-Werror"
-    ]
-}
-
-// 测试兼容及目标版本
-compileTestJava {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-    options*.compilerArgs = [
-            // 测试编译参数
-            "-parameters"
-    ]
-}
-
-// 依赖
 dependencies {
+    compile project(':module:api')
+    compile project(':module:model')
+}
 
-    // 通用依赖
-    compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.0-b01'
-    compile "org.projectlombok:lombok:1.16.8"
-    compile group: 'commons-io', name: 'commons-io', version: '2.4'
-    compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+// 设置 Spring Boot 根类
+bootRepackage {
+    mainClass = 'wx.csba.webapp.Application'
+}
 
-    // 数据处理
-    compile group: "com.alibaba", name: "fastjson", version: "1.2.14"
-    compile 'com.fasterxml.jackson.core:jackson-core:2.9.0.pr1'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.0.pr1'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.0.pr1'
-    compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-providers:2.9.0.pr1'
-    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.0.pr1'
+// 设置打包生成的 Jar 包信息
+jar {
+    baseName = 'spring-boot-app-boilerplate'
+    version = '0.0.1-SNAPSHOT'
+}
 
-    // Spring Boot
-    compile(group: "org.springframework.boot", name: "spring-boot-starter-web", version: springBootVersion) {
-        exclude(module: 'spring-boot-starter-tomcat')
-        exclude group: "commons-logging", module: "commons-logging"
+// api 模块
+project(':module:api') {
+    dependencies {
+        compile project(':module:model')
     }
-    compile group: "org.springframework.boot", name: "spring-boot-starter-jetty", version: springBootVersion
-    compile group: "org.springframework.boot", name: "spring-boot-starter-test", version: springBootVersion
-    compile group: "org.springframework.boot", name: "spring-boot-starter-redis", version: springBootVersion
-    compile group: "org.springframework.boot", name: "spring-boot-starter-jdbc", version: springBootVersion
-    compile group: "org.springframework.boot", name: "spring-boot-starter-aop", version: springBootVersion
-
-    // 数据库驱动
-    compile group: 'commons-dbcp', name: 'commons-dbcp', version: '1.4'
-    compile group: "com.alibaba", name: "druid", version: "1.0.23"
-    compile group: "com.oracle", name: "ojdbc7", version: "12.1.0"
-    runtime group: "com.microsoft.sqlserver", name: "sqljdbc4", version: "4.0.2206.100"
-
-    compile group: "org.apache.shiro", name: "shiro-web", version: "1.2.6"
-    compile group: "org.apache.shiro", name: "shiro-ehcache", version: "1.2.6"
-    compile group: "org.apache.shiro", name: "shiro-spring", version: "1.2.6"
-
-    compile group: "org.mybatis", name: "mybatis", version: "3.4.0"
-    compile group: "org.mybatis", name: "mybatis-spring", version: "1.3.0"
-
-    // 日志记录
-    compile 'org.slf4j:slf4j-api:1.7.21'
-
-    // 文档
-    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.5.0'
-    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.5.0'
-
-    // 测试驱动
-    testCompile 'junit:junit:4.12'
-    testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
-// 自动生成的配置
-configurations {
-    mybatisGenerator
-}
+project(':module:model') {
 
-mybatisGenerator {
-    verbose = true
-    configFile = 'src/main/resources/autogen/generatorConfig.xml'
 }
 
 // 辅助程序
