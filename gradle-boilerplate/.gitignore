@@ -1,6 +1,6 @@
 # 自定义忽略文件
 /classes/
-lib/
+
 
 # 工作区间文件
 .gradle/
