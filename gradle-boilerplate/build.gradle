@@ -51,11 +51,11 @@ repositories {
 group = "wx.csba"
 
 // 设置命令行程序的主类
-mainClassName = "wx.wx.csba.webapp.cli.Main"
+mainClassName = "wx.csba.cli.Main"
 
 // 设置 Spring Boot 根类
 bootRepackage {
-    mainClass = 'com.zhulong.edataapp.Application'
+    mainClass = 'wx.csba.webapp.SpringBootApplication'
 }
 
 ext {
@@ -100,15 +100,6 @@ compileTestJava {
             "-parameters"
     ]
 }
-
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: rootProject.config)
-    }
-    exclude "**/*.java"
-}
-
-compileJava.dependsOn(processResources)
 
 // 依赖
 dependencies {
