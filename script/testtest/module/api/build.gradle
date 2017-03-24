@@ -1,13 +1,3 @@
-apply plugin: "idea"
-
-idea {
-    module {
-        inheritOutputDirs = false
-        outputDir = file("$buildDir/classes/main/")
-        testOutputDir = file("$buildDir/classes/test/")
-    }
-}
-
 dependencies {
     // 文档
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.5.0'

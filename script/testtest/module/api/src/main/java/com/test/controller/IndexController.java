@@ -1,11 +1,11 @@
-package wx.csba.controller;
+package com.test.controller;
 
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wx.csba.model.entity.Greeting;
+import com.test.model.entity.Greeting;
 
 @RestController
 public class IndexController {

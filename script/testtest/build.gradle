@@ -25,15 +25,6 @@ ext {
     springBootVersion = "1.5.2.RELEASE"
 }
 
-apply plugin: "idea"
-
-idea {
-    module {
-        inheritOutputDirs = false
-        outputDir = file("$buildDir/classes/main/")
-        testOutputDir = file("$buildDir/classes/test/")
-    }
-}
 
 
 allprojects {
@@ -41,6 +32,8 @@ allprojects {
     // 插件
     apply plugin: 'java'
     apply plugin: "spring-boot"
+    apply plugin: "com.arenagod.gradle.MybatisGenerator"
+    apply plugin: "idea"
 
     // 仓库
     repositories {
@@ -57,7 +50,7 @@ allprojects {
     }
 
     // 设置组名
-    group = "wx.csba"
+    group = "com.test"
 
     // 设置源代码路径
     sourceSets {
@@ -68,17 +61,6 @@ allprojects {
             resources {
                 srcDir "src/main/resources"
                 srcDir "src/main/java"
-                exclude "**/*.java"
-            }
-        }
-
-        test {
-            java {
-                srcDir "src/test/java"
-            }
-            resources {
-                srcDir "src/test/resources"
-                srcDir "src/test/java"
                 exclude "**/*.java"
             }
         }
@@ -136,7 +118,12 @@ allprojects {
     }
 }
 
-
+idea {
+    module {
+        inheritOutputDirs = false
+        outputDir = file("$buildDir/classes/main/")
+    }
+}
 
 
 dependencies {
@@ -146,7 +133,7 @@ dependencies {
 
 // 设置 Spring Boot 根类
 bootRepackage {
-    mainClass = 'wx.csba.webapp.Application'
+    mainClass = 'com.test.webapp.Application'
 }
 
 // 设置打包生成的 Jar 包信息

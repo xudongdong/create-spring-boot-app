@@ -1,14 +1,3 @@
-apply plugin: "idea"
-apply plugin: "com.arenagod.gradle.MybatisGenerator"
-
-idea {
-    module {
-        inheritOutputDirs = false
-        outputDir = file("$buildDir/classes/main/")
-        testOutputDir = file("$buildDir/classes/test/")
-    }
-}
-
 dependencies {
     // 数据库驱动
     compile 'com.h2database:h2:1.4.194'
