@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="wx.wechat.service.WXServiceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2016-06-07T03:15:17" hostname="Chevalier.local" time="0.0">
-  <properties/>
-  <testcase name="test_convertToXML" classname="wx.wechat.service.WXServiceTest" time="0.0"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

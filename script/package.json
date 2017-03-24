@@ -11,17 +11,8 @@
   },
   "keywords": [
     "boilerplate",
-    "live",
-    "hot",
-    "reload",
-    "react",
-    "reactjs",
-    "hmr",
-    "edit",
-    "webpack",
-    "babel",
-    "react-transform",
-    "PostCSS(FlexBox Polyfill)"
+    "spring-boot",
+    "gradle"
   ],
   "dependencies": {
     "chalk": "^1.1.3",
