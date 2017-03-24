@@ -28,15 +28,15 @@ if (currentNodeVersion.split(".")[0] < 4) {
       "当前 Node 版本为 " +
         currentNodeVersion +
         ".\n" +
-        "本工具依赖于 Node 4.0 及以上版本。\n" +
-        "请更新你的 Node 版本。"
+        "本工具依赖于 Node 4.0 及以上版本\n" +
+        "请更新你的 Node 版本"
     )
   );
   process.exit(1);
 }
 
+// 项目名
 var projectName;
-var packageName;
 
 var program = commander
   .version(require("./package.json").version)
@@ -47,6 +47,7 @@ var program = commander
   })
   .option("-p, --package [package]", "选择包名（默认 wx.csba）", "wx.csba")
   .option("-t, --type [type]", "选择模板类型 [gradle/maven]", "gradle")
+  .option("-a, --addon [addon]", "选择所需要的扩展，多个以逗号隔开 [all/weixin]", "all")
   .allowUnknownOption()
   .on("--help", function() {
     console.log("    仅 " + chalk.green("<project-name>") + " 是必须参数！");
@@ -73,11 +74,15 @@ if (typeof projectName === "undefined") {
     "  " + chalk.cyan(program.name()) + chalk.green(" my-spring-boot-app")
   );
   console.log();
-  console.log("允许 " + chalk.cyan(program.name() + " --help") + " 查看所有选项。");
+  console.log("允许 " + chalk.cyan(program.name() + " --help") + " 查看所有选项");
   process.exit(1);
 }
 
-packageName = program.package;
+// 获取到包名
+var packageName = program.package;
+
+// 获取到选定要使用的扩展
+var addon = program.addon;
 
 createApp(projectName, program.type);
 
@@ -97,12 +102,12 @@ function createApp(name, type) {
   fs.ensureDirSync(name);
 
   if (!isSafeToCreateProjectIn(root)) {
-    console.log("目录 " + chalk.green(name) + " 包含冲突文件。");
-    console.log("请使用新的目录名。");
+    console.log("目录 " + chalk.green(name) + " 包含冲突文件");
+    console.log("请使用新的目录名");
     process.exit(1);
   }
 
-  console.log("开始创建新的 Spring Boot 应用： " + chalk.green(root) + "。");
+  console.log("开始创建新的 Spring Boot 应用： " + chalk.green(root) + "");
 
   // 当前目录
   var originalDirectory = process.cwd();
@@ -186,10 +191,9 @@ function checkAppName(appName) {
   if (allDependencies.indexOf(appName) >= 0) {
     console.error(
       chalk.red(
-        "We cannot create a project called " +
+        "无法创建名为 " +
           chalk.green(appName) +
-          " because a dependency with the same name exists.\n" +
-          "Due to the way npm works, the following names are not allowed:\n\n"
+          " 的项目，因为已经存在同名文件夹\n"
       ) +
         chalk.cyan(
           allDependencies
@@ -198,7 +202,7 @@ function checkAppName(appName) {
             })
             .join("\n")
         ) +
-        chalk.red("\n\nPlease choose a different project name.")
+        chalk.red("\n\n请输入其他名称")
     );
     process.exit(1);
   }
