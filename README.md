@@ -1,596 +1,209 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+> [利用 create-spring-boot-app 快速创建 Spring Boot 应用](https://zhuanlan.zhihu.com/p/25974673) 从属于笔者的 [服务端应用程序开发与系统架构](https://github.com/wxyyxc1992/ServerSideApplication-Development-And-System-Architecture)。最近一段时间我司业务快速扩展，针对不同的项目分割了很多代码库，为了方便新同事学习与快速使用 Spring Boot 项目，顺手将之前的模板整合为 [create-spring-boot-app](https://github.com/wxyyxc1992/create-spring-boot-app)，跟笔者之前的 [create-react-boilerplate](https://github.com/wxyyxc1992/create-react-boilerplate) 都是属于脚手架系列。
+更多编程语言、服务端开发方面的知识图谱参考 [2016: 我的技术体系结构图](https://zhuanlan.zhihu.com/p/24476917)、[探究高可用服务端架构的优秀资料索引](https://zhuanlan.zhihu.com/p/25820192)、[追求技术之上的进阶阅读学习索引](https://zhuanlan.zhihu.com/p/25642783) 、 [机器学习、深度学习与自然语言处理领域推荐的书籍列表](https://zhuanlan.zhihu.com/p/25612011)。
 
-- [WXWeChatToolkits](#wxwechattoolkits)
-- [公众号管理](#%E5%85%AC%E4%BC%97%E5%8F%B7%E7%AE%A1%E7%90%86)
-  - [用户鉴权](#%E7%94%A8%E6%88%B7%E9%89%B4%E6%9D%83)
-  - [JSSDK](#jssdk)
-- [微信支付](#%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98)
-  - [统一下单获取预支付代码](#%E7%BB%9F%E4%B8%80%E4%B8%8B%E5%8D%95%E8%8E%B7%E5%8F%96%E9%A2%84%E6%94%AF%E4%BB%98%E4%BB%A3%E7%A0%81)
-  - [微信内H5支付](#%E5%BE%AE%E4%BF%A1%E5%86%85h5%E6%94%AF%E4%BB%98)
-  - [支付结果回调](#%E6%94%AF%E4%BB%98%E7%BB%93%E6%9E%9C%E5%9B%9E%E8%B0%83)
-- [WebUI:页面呈现于效果实现](#webui%E9%A1%B5%E9%9D%A2%E5%91%88%E7%8E%B0%E4%BA%8E%E6%95%88%E6%9E%9C%E5%AE%9E%E7%8E%B0)
-  - [Boilerplate:基本页面模板](#boilerplate%E5%9F%BA%E6%9C%AC%E9%A1%B5%E9%9D%A2%E6%A8%A1%E6%9D%BF)
-    - [提示跳转到浏览器打开](#%E6%8F%90%E7%A4%BA%E8%B7%B3%E8%BD%AC%E5%88%B0%E6%B5%8F%E8%A7%88%E5%99%A8%E6%89%93%E5%BC%80)
-    - [防止下拉"露底"](#%E9%98%B2%E6%AD%A2%E4%B8%8B%E6%8B%89%E9%9C%B2%E5%BA%95)
-  - [Scroll Animation:滚动效果](#scroll-animation%E6%BB%9A%E5%8A%A8%E6%95%88%E6%9E%9C)
-- [JSSDK:其他JSSDK常用操作](#jssdk%E5%85%B6%E4%BB%96jssdk%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C)
-  - [Share:分享](#share%E5%88%86%E4%BA%AB)
-    - [不使用额外API设置分享的标题、图片与链接](#%E4%B8%8D%E4%BD%BF%E7%94%A8%E9%A2%9D%E5%A4%96api%E8%AE%BE%E7%BD%AE%E5%88%86%E4%BA%AB%E7%9A%84%E6%A0%87%E9%A2%98%E3%80%81%E5%9B%BE%E7%89%87%E4%B8%8E%E9%93%BE%E6%8E%A5)
+# 利用 create-spring-boot-app 快速创建 Spring Boot 应用
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-# WXWeChatToolkits
-我的微信SDK，包括公众平台管理、微信支付等各个版本。老实说,微信的文档并不是很友好,坑不少啊~~ 笔者在这里准备的算是半自动化的,自认为的特性有:
-
-- 前后端分离,这里的JS代码和后端代码是可以单独部署的。换言之,微信里需要的各种各样的域名配置与审核,你只要保证你的HTML页面在那个域名下就好,业务逻辑的代码随便放
-- 后端这边笔者自己开发时候用的是Spring Boot,但是这里移除了所有Spring Boot的紧密耦合代码,只是用Pure Java API进行实现,也方便单元测试
-- 前端这边用的是ES6 + Webpack,可以参考笔者其他前端项目
-
-下面就大概描述下开发流程和可以用到的本代码集的东东,半成品,权当一乐。
-
-
-# 公众号管理
-
-## 用户鉴权
-
-用户鉴权首先需要检测是否进行认证跳转:
-
+如果你尚未安装 Node.js 环境，推荐使用 [nvm](https://github.com/creationix/nvm) 安装 Node.js 基本环境。如果你尚未安装 Java 或者 Gradle，推荐使用 [sdkman](sdkman.io) 安装 Java/Gradle。基本环境安装完毕之后可以使用 npm 安装脚手架：
 ```
-WXService wxService = new WXService();
+npm install create-spring-boot-app -g
+```
+安装完毕后，可以查看常用命令：
+```
+➜  ~ create-spring-boot-app -h
 
+  Usage: create-spring-boot-app <project-name> [options]
 
-//判断是否为微信系统内
-if (wxService.isWeixinBrowser()) {
+  Options:
 
-    //如果是在微信浏览器内判断是否需要进行登录操作
-    const openid = wxService.getOpenidOrRedirectToAuth("eapply");
+    -h, --help               output usage information
+    -V, --version            output the version number
+    -p, --package [package]  选择包名（默认 wx.csba）
+    -t, --type [type]        选择模板类型 [gradle/maven]
+    -a, --addon [addon]      选择所需要的扩展，多个以逗号隔开 [all/weixin]
 
-    if (!openid) {
-        //如果openid不存在,则提示错误,并且跳转登录授权
-        message.info("未登录,现进行登录授权!");
-    } else {
-        //执行JSSDK的注册
-        wxService.jssdkConfig();
+    仅 <project-name> 是必须参数！
+```
+
+我们现在可以使用 create-spring-boot-app 直接创建新的 Spring Boot 项目：
+```
+➜  ~ create-spring-boot-app testtest -p com.test
+开始创建新的 Spring Boot 应用位于文件夹 /Users/apple/testtest
+初始化 testtest 基于 gradle-boilerplate
+开始抓取远端模板 https://github.com/wxyyxc1992/create-spring-boot-app
+将包名更为：com.test
+应用创建完毕
+
+使用 cd testtest 进入项目文件夹
+使用 gradle :help 查看可用命令
+```
+
+进入到项目目录下，我们可以查看可用命令：
+```
+➜  testtest gradle :help
+Starting a Gradle Daemon, 25 stopped Daemons could not be reused, use --status for details
+:help
+使用 gradle :bootRun 运行 Spring Boot 项目（这里的 : 表示从根模块开始运行）
+使用 gradle :build 打包 Jar
+使用 gradle task 查看所有任务
+
+BUILD SUCCESSFUL
+
+Total time: 3.966 secs
+```
+
+然后使用 `gradle :bootRun` 命令启动服务器，然后打开 `localhost:8081` 即可查看基本的访问返回。为了保证应用具有热加载功能，我们使用 [Spring Loaded](http://docs.spring.io/spring-boot/docs/current/reference/html/howto-hotswapping.html) 插件：
+
+```groovy
+buildscript {
+    repositories { jcenter() }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE"
+        classpath 'org.springframework:springloaded:1.2.6.RELEASE'
     }
-
 }
 
-```
+apply plugin: 'idea'
 
-这里的跳转大概是这样的路径:
-```
-const auth_url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${this.appid}&response_type=code&scope=snsapi_base&state=${state}&redirect_uri=${this.redirect_uri}#wechat_redirect`
-```
-注意,一开始笔者自己是想将回调之后的跳转路径放到State里面的,但是微信好像对State做了限制,因此在这里只是配置了一个标识,而具体的标识与跳转地址映射写到了后台代码里:
-
-```MPAPI
-    /**
-     * @return
-     * @function 生成State与跳转的网页的配置
-     */
-    private Map<String, String> stateMapGenerator() {
-
-        Map<String, String> stateMap = new HashMap<>();
-
-        //电子报名页面默认的跳转
-        stateMap.put("eapply", "http://mp.dragon.live-forest.com/pay/index.html");
-
-        return stateMap;
-
+idea {
+    module {
+        inheritOutputDirs = false
+        outputDir = file("$buildDir/classes/main/")
     }
-```
-
-## JSSDK
-微信的官方文档里提到,要申请JSSDK要先去获取jsapi_ticket,而jsapi_ticket需要用access_token换取。要注意,微信的access_token是分类型的,上面用户鉴权也用到了access_token,不过那个的类型是authentic。
-这里的access_token类型是jsapi。配置的前端代码是:
-```
-jssdkConfig() {
-
-        //插入JSSDK脚本
-        // load a single file
-        loadjs('http://res.wx.qq.com/open/js/jweixin-1.0.0.js', () => {
-            // foo.js loaded'//从URL中获取JSSDK信息
-
-            //访问远端获取JSSDK配置信息
-            this.getWithQueryParams({
-                path: "/mp/jssdk",
-                requestData: {
-                    url: location.href
-                }
-            }).then((jssdk)=> {
-
-                console.log(jssdk);
-
-                //配置JSSDK
-                wx.config({
-
-                    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-
-                    appId: this.appid, // 必填，公众号的唯一标识
-
-                    timestamp: jssdk.timestamp, // 必填，生成签名的时间戳
-
-                    nonceStr: jssdk.noncestr, // 必填，生成签名的随机串
-
-                    signature: jssdk.signature,// 必填，签名，见附录1
-
-                    jsApiList: ['chooseWXPay'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-
-                });
-
-                //监控错误信息
-                wx.error(function (res) {
-
-                    // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-                    alert(JSON.stringify(res));
-                });
-
-            });
-
-
-        });
-
-
-    }
-```
-
-后端代码是:
-```
-        //初始化服务
-        MPService mpService = new MPService();
-
-        //首先获取接口调用凭据
-        String accessToken = mpService.fetchAccessToken4ClientCredential().get("access_token");
-
-        //根据accessToken获取Ticket
-        //从微信服务端获取到Ticket
-        String apiTicket = mpService.fetchTicketByAccessToken(accessToken, "jsapi").get("ticket");
-
-        //获取随机字符串
-        String nonceStr = StringGenerator.getRandomString(10);
-
-        //获取当前时间戳
-        Long timeStamp = Instant.now().getEpochSecond();
-
-        //进行签名
-        Map<String, Object> signatureMap = new HashMap<>();
-
-        signatureMap.put("noncestr", nonceStr);
-
-        signatureMap.put("jsapi_ticket", apiTicket);
-
-        signatureMap.put("timestamp", timeStamp);
-
-        signatureMap.put("url", url);
-
-        signatureMap.put("signature", Signature.getSign4MP(signatureMap));
-
-        return signatureMap;
-```
-
-# 微信支付
-
-注意，微信支付内也需要签名，但是签名的算法以及所需要的Key与公众号管理内还是有一定区别的。
-
-## 统一下单获取预支付代码
-前端代码:
-```
-    fetchPrepayId({
-        body = "商品详情",
-        out_trade_no = "1415659990",
-        total_fee = 1,
-        openid = undefined,
-        attach //附加信息
-    }) {
-
-        if (openid) {
-            //如果存在openid,则是以JSAPI方式调用
-            return this.getWithQueryParams({
-                path: this.fetchPrepayIdUrl,
-                requestData: {
-                    body,
-                    out_trade_no,
-                    total_fee,
-                    openid,
-                    attach
-                }
-            });
-        } else {
-            //否则是以APP方式调用
-            return this.getWithQueryParams({
-                path: this.fetchPrepayIdUrl,
-                requestData: {
-                    body,
-                    out_trade_no,
-                    total_fee,
-                    attach
-                }
-            });
-
-        }
-
-
-    }
-```
-后端代码:
-```
-    @SneakyThrows
-    public Map<String, Object> prepay(
-            String body,
-            String out_trade_no,
-            Integer total_fee,
-            String openid,
-            String attach) {
-
-        //最终返回的结果
-        Map<String, Object> result = new HashMap<>();
-
-        //调用统一下单服务
-        UnifiedOrderService unifiedOrderService = UnifiedOrderService
-                .builder(body, out_trade_no, total_fee, getIp("127.0.0.1"))
-                .attach(attach)
-                .build();
-
-        //获取的返回的同一订单信息
-        Map<String, Object> unidiedOrder;
-
-        //判断openid是否存在
-        if (openid != null) {
-            //如果opendid存在,则创建JSAPI Order
-            unidiedOrder = unifiedOrderService.jsApiOrder(openid);
-        } else {
-            unidiedOrder = unifiedOrderService.appOrder();
-        }
-
-//        System.out.println(unidiedOrder);
-
-        /* 最终客户端要提交给微信服务器的订单,因此我们也要将关键信息加进去
-        "appId" : "wx2421b1c4370ec43b",     //公众号名称，由商户传入
-        "timeStamp":" 1395712654",         //时间戳，自1970年以来的秒数
-        "nonceStr" : "e61463f8efa94090b1f366cccfbbb444", //随机串
-        "package" : "prepay_id=u802345jgfjsdfgsdg888",
-        "signType" : "MD5",         //微信签名方式:
-        "paySign" : "70EA570631E4BB79628FBCA90534C63FF7FADD89" //微信签名
-        */
-
-        //获取随机字符串
-        String nonceStr = RandomStringGenerator.getRandomStringByLength(20);
-
-
-        //返回商户对应的AppID
-        result.put("appId", Configure.appID);
-
-        result.put("timeStamp", Instant.now().getEpochSecond());
-
-        result.put("nonceStr", nonceStr);
-
-        result.put("package", "prepay_id=" + unidiedOrder.get("prepay_id"));
-
-        result.put("signType", "MD5");
-
-        result.put("paySign", Signature.getSign4Pay(result));
-
-        //直接返回
-        return result;
-    }
-```
-
-## 微信内H5支付
-
-```
-    doSyncPay({
-        appId="wx7d0444df2763bf91",
-        timeStamp="1465698294",
-        nonceStr="2g1w8kvb5lamqwfx6j8o",
-        package_r="prepay_id=wx2016061210245447b57ae3b30364645260",
-        signType="MD5",
-        paySign="01B98B973451A1AA83EC062F2F46AB75"
-    }, cb) {
-
-        //调用微信支付的接口
-        WeixinJSBridge.invoke(
-            'getBrandWCPayRequest', {
-                "appId": appId,
-                "timeStamp": timeStamp,
-                "nonceStr": nonceStr,
-                "package": package_r,
-                "signType": signType,
-                "paySign": paySign
-            },
-            function (res) {
-
-                //打印支付信息
-                console.log(res);
-
-                if (res.err_msg == "get_brand_wcpay_request:ok") {
-                    //支付成功
-                    cb(res);
-
-                } else {
-
-                    // alert(JSON.stringify(res));
-
-                    alert("您取消了支付!");
-                }
-            }
-        )
-        ;
-    }
-```
-## 支付结果回调
-
-```
-   public String wx_notify(String body) {
-
-//        System.out.println(body);
-
-        PayedOrderService payedOrderService = new PayedOrderService();
-
-        //解析数据
-        Map<String, String> parsedMap = payedOrderService.parseNotifyXML(body);
-
-        System.out.println(parsedMap);
-
-        //调用更新状态的函数
-        payedOrderService.updateOrderState(parsedMap.get("attach"), "1", "1", parsedMap.get("TransactionId"));
-
-        return "success";
-    }
-```
-
-# WebUI:页面呈现于效果实现
-
-## Boilerplate:基本页面模板
-
-### 提示跳转到浏览器打开
-
-微信内页面对于链接跳转、应用下载等做了很多的限制，因此很多时候我们需要提示用户在右上角选择到浏览器中打开，基本效果如下图所示：
-
-- iOS
-
-![](http://dearb.u.qiniudn.com/QQ20131107164807.jpg)
-
-- Android
-
-![](http://d.16css.com/d/file/piaofu/201504/58ae7db94d79dca847d697559b1e38be.png)
-
-笔者在这里对二者的代码做了总结和调整，最后的代码为：
-
-- HTML
-```
-<div id='popweixin'>
-    <div class='tip top2bottom animate-delay-1'>
-        <div class="android" id="popweixin-android">
-        </div>
-        <div class="ios" id="popweixin-ios">
-            <span>如果无法点击下载,请点击右上角跳转按钮,选择"在Safari中打开"~</span>
-            <img src="http://7xiegq.com1.z0.glb.clouddn.com/weixin-tips-ios.png" alt="">
-        </div>
-    </div>
-</div>
-```
-
-- Style
-```
-<style>
-    #popweixin {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        position: fixed;
-        z-index: 1000;
-        background: rgba(0, 0, 0, .5);
-        top: 0;
-        left: 0;
-        display: none;
-        z-index: 999999;
-    }
-
-    #popweixin .tip {
-        height: 50%;
-        width: 100%;
-        background: none;
-        z-index: 1001;
-    }
-
-    .top2bottom {
-        -webkit-animation: top2bottom 1.2s ease;
-        -moz-animation: top2bottom 1.2s ease;
-        -o-animation: top2bottom 1.2s ease;
-        animation: top2bottom 1.2s ease;
-        -webkit-animation-fill-mode: backwards;
-        -moz-animation-fill-mode: backwards;
-        -o-animation-fill-mode: backwards;
-        animation-fill-mode: backwards
-    }
-
-    .animate-delay-1 {
-        -webkit-animation-delay: 1s;
-        -moz-animation-delay: 1s;
-        -o-animation-delay: 1s;
-        animation-delay: 1s
-    }
-
-    @-webkit-keyframes top2bottom {
-        0% {
-            -webkit-transform: translateY(-300px);
-            opacity: .6
-        }
-        100% {
-            -webkit-transform: translateY(0px);
-            opacity: 1
-        }
-    }
-
-    @keyframes top2bottom {
-        0% {
-            transform: translateY(-300px);
-            opacity: .6
-        }
-        100% {
-            transform: translateY(0px);
-            opacity: 1
-        }
-    }
-
-    #popweixin .tip .android {
-        height: 100%;
-        background: url("http://demo.16css.com/piaofu/906/live_weixin.png");
-        background-size: 100% 100%;
-        padding: 5px;
-        top: 10px;
-        display: none;
-    }
-
-    #popweixin .tip .ios {
-        height: 100%;
-        margin-top: 10%;
-        padding: 5%;
-    }
-
-    #popweixin .tip .ios span {
-        float: left;
-        color: white;
-        font-size: 25px;
-        line-height: 50px;
-        width: 65%;
-    }
-
-    #popweixin .tip .ios img {
-        float: right;
-        height: 45%;
-        width: 30%;
-    }
-
-</style>
-```
-
-- Script
-```
-<script>
-    //判断浏览器类型
-    var ua = navigator.userAgent.toLowerCase();
-
-    if (ua.match(/MicroMessenger/i) == "micromessenger") {
-
-        //如果是微信浏览器,则设置弹出层显示
-        document.getElementById("popweixin").style.display = "block";
-
-        if (/iphone|ipod/.test(ua)) {
-
-            //iOS微信
-            document.getElementById("popweixin-ios").style.display = "block";
-
-        } else {
-
-            // Android微信版本
-            document.getElementById("popweixin-android").style.display = "block";
-
-        }
-
-
-    }
-
-</script>
-```
-
-
-### 防止下拉"露底"
-
-在微信中，随便打开一个H5页面，用力往下扯的时候，页面上方会出现“黑底”，黑底上有一行诸如`网页由game.weixin.qq.com提供`的文字，有时候会很难看啊，如果需要避免这种下拉露底，一般来说有几种方式：
-
-（1）直接使用iScroll或者niceScroll托管滚动事件。
-
-（2）判断下拉
-
-可以参考类库[preventoverscrolljs](https://github.com/yuanzm/preventoverscrolljs)，引用组件支持下面两种方式：
-
-- clone之后直接拷贝引用`bin`文件夹下面的`preventoverscroll.min.js`
-- 从npm下载安装
-  - `npm install --save preventoverscrolljs`
-  - var PreventOverScroll = require('preventoverscrolljs');
-
-然后页面布局上设置一个包裹层：
-
-```
-<body id="wrapper">
-    <div id="container"></div>
-</body>
-```
-
-样式要写成这个样子：
-
-```
-html, body {
-  width: 100%;
-  height: 100%;
 }
-#container {
-	height: 100%;
+
+// ...
+```
+该插件在笔者的 Java 8u121 版本中是会报异常，正在尝试解决中。
+
+# 目录结构
+
+```
+- spring-boot-app
+    - src
+        - application
+    - module
+        - api    
+            - controller
+            - logic
+            - graphql
+        - shared
+            - entity
+            - util
+        - model
+            - rds
+            - kv
+        - service
+    - addon
+        - weixin
+```
+
+各个模块之间独立可测试，模块间尽量显式依赖；不过这些模块并非强制分组，对于初期应用也可以选择不进行分模块，全部代码写在根应用中。模块之间的依赖关系如下：
+
+![](https://coding.net/u/hoteam/p/Cache/git/raw/master/2017/3/1/SpringBootApplication.png)
+
+
+
+
+# 共享模块
+
+## 实体类
+
+实体类推荐使用 [Lombok](https://projectlombok.org/features/index.html) 进行实时封装。Lombok主要依赖编译时代码生成技术，帮你自动生成基于模板的常用的 Java 代码，譬如最常见的 Getter 与 Setter 。之前动态的插入 Getter 与 Setter 主要有两种，一个是像 Intellij 与 Eclipse 这样在开发时动态插入，缺点是这样虽然不用你手动写，但是还是会让你的代码异常的冗长。另一种是通过类似于 Spring 这样基于注解的在运行时利用反射动态添加，不过这样的缺陷是会影响性能，并且有一定局限性。笔者目前用的开发环境是 Intellij+Gradle，这里只介绍下这种搭建方式，其他的基于 Eclipse 或者 Maven 的可以到官网主页查看。
+（1）在 Intellij 中添加 Plugin
+- Go to `File > Settings > Plugins`
+- Click on `Browse repositories...`
+- Search for `Lombok Plugin`
+- Click on `Install plugin`
+- Restart Android Studio
+
+（2）允许注解处理
+- Settings -> Compiler -> Annotation Processors
+
+（3）Gradle中添加依赖（默认已经添加）
+```
+compile "org.projectlombok:lombok:1.12.6"
+```
+
+# 数据接口
+
+## 接口风格
+
+接口推荐使用 RESTful 与 ActionBased 风格的接口，对于复杂查询可以考虑使用 GraphQL 风格的查询语言进行二次封装。不过在应用服务器本身应该尽可能地提供原子化的接口，特别是在快速迭代的产品开发中，在需求稳定之前后台应该尽可能地提供细粒度的接口让前端自由封装。可以参考 [来自于PayPal的RESTful API标准](https://segmentfault.com/a/1190000005924733)、[Google API Design Guide](https://cloud.google.com/apis/design/) 等。
+
+## 逻辑与副作用分离
+
+笔者特意设置了 logic 包，应将业务逻辑抽象为纯函数的方式放置到 logic 包中，方便测试与复用。
+
+# 数据持久化
+
+项目中计划使用 Mybatis 作为半自动的数据持久化工具，使用 Mybatis Generator 作为代码自动生成工具。
+
+# 微服务
+ 
+## HTTPS 与负载均衡
+
+推荐是所有的对外开放的接口全部使用 HTTPS 连接，但是不建议直接在应用服务器上添加 HTTPS 证书和支持；可以使用 Nginx/Caddy 这样的 Web 服务器进行反向代理与负载均衡操作，更多信息参考 [清新脱俗的 Web 服务器 Caddy](https://zhuanlan.zhihu.com/p/25850060) 、[Nginx 基本配置备忘](https://zhuanlan.zhihu.com/p/24524057)。
+
+## 服务状态监听
+
+项目中使用了 [actuator-service](https://spring.io/guides/gs/actuator-service/) 监听服务运行状态，需要在依赖中添加 `compile("org.springframework.boot:spring-boot-starter-actuator")`，然后在配置文件中指定监听地址：
+```
+management.port=8082
+management.address=127.0.0.1
+```
+在应用启动后，访问 `/health` 即可以获取到系统当前信息：
+```
+{
+    status: "UP",
+    diskSpace: {
+        status: "UP",
+        total: 249804890112,
+        free: 27797606400,
+        threshold: 10485760
+        }
 }
 ```
 
-最后实例化组件：
+# 测试
 
+## 单元测试
+
+单元测试的目标是某个单独类或者函数的功能，应该尽可能地通过 Mock 等技术隔离测试环境，譬如我们要测试某个接口：
 ```
-var list = ['container'];
-var prevent = new PreventOverScroll({
-    list: list
-});
-```
+@RunWith(SpringRunner.class)
+@WebMvcTest(IndexController.class)
+public class IndexControllerTest {
 
-有时候还需要对Android或者iOS做一个区分：
+    @Autowired
+    private MockMvc mockMvc;
 
-```
-var outer = (  isAndroid // do it yourself
-             ? 'wrapper'
-             : 'container' );
-var list = [outer];
-var prevent = new PreventOverScroll({
-    list: list
-});
+    @Test
+    public void greetingShouldReturnMessageFromService() throws Exception {
+        this.mockMvc.perform(get("/")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("Hello Mock")));
+    }
 
-```
-
-
-
-## Scroll Animation:滚动效果
-
-# JSSDK:其他JSSDK常用操作
-
-## Share:分享
-
-### 不使用额外API设置分享的标题、图片与链接
-
-> [原文地址](https://github.com/navyxie/weixin_js)
-
-微信在6.0.2及以上版本已经回收客户端自定分享的权限，而是以授权api的形式开放出来。有时候我们只想简单地自定义分享的title,分享的图片以及分享的链接时，而不想或者缺乏资源去接入微信api的时候该怎么实现呢？
-
-1.设置分享title:动态改变document.title值即可:
-
-```
-document.title = 'test'
+}
 ```
 
-2.设置分享图片：在页面隐藏一张尺寸大于290*290的图（图片需要容器包裹，设置容器css属性display:none即可）:
+## 集成测试
+在集成测试中我们需要尽量模拟真实环境，测试多个模块间的互动；譬如在单元测试中我们会 Mock 数据库连接、外部服务等，但是在集成测试中我们的测试目标仍然是单元功能点，但是会测试其在真实环境下的多模块耦合的功能表现。
 
-```
-<div style="display:none"><img src="share.jpg" /></div>
-```
-
-3.设置分享的链接：动态修改document.documentURI的值即可（safari下，document.documentURI为只读属性，可借助history.pushState ）
-
-```
-//android:
-document.documentURI = "http://www.navyxie.com"；//经测试wechat6.3.13版本下此方法已失效，可使用同下IOS的方法自定义。
-//ios:
-window.history.pushState("weixin-share-url", "weixinshare", "http://www.navyxie.com");//只可设置同域链接
-```
-
-以上方法即可在微信6.0.2+版本自定义分享内容，不需额外引入微信的js文件
+## 端到端测试
+端到端测试相对而言属于黑盒测试，我们往往对部署在生产环境下的应用服务测试其可用性与逻辑准确性。
 
 
+## 扩展
 
+`/addon` 目录下存放的是某些可复用的业务扩展代码，典型的譬如微信后台，包括微信登录、微信支付等常用功能；开发者可以使用 `-a` 选项来选择初始化时需要的扩展模板，默认是全部扩展都会被添加进来。
 
+- 微信：我的微信SDK，包括公众平台管理、微信支付等各个版本。老实说,微信的文档并不是很友好,坑不少啊~~ 笔者在这里准备的算是半自动化的。参考 [这里](https://github.com/wxyyxc1992/create-spring-boot-app/Weixin.md) 查看具体的功能描述与代码说明
+
+# Roadmap
+
+笔者拟计划未来添加以下特性：
+- 继续完成常用功能
+- 类似于 Rails 的代码自动生成
+- 嵌入的常见 Java 调试工具
+
+欢迎大家提出建议、需求与 PR
