@@ -18,4 +18,10 @@ include 'services:webservice'
 
 include ':module:api'
 include ':module:model'
+include ':module:shared'
+
+// @@:addon:weixin
+include ':addon:weixin'
+// ##:addon:weixin
+
 rootProject.name = 'spring-boot-app'

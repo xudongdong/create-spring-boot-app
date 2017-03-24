@@ -1,4 +1,4 @@
-package wx.csba.model.dao;
+package wx.csba.model.rds;
 
 /**
  * Created by apple on 2017/3/24.
