@@ -113,17 +113,17 @@ function createApp(name, type) {
       chalk.green(appName) +
       " 基于 " +
       chalk.cyan(type + "-boilerplate") +
-      "。。。"
+      ""
   );
 
-  console.log("开始抓取远端模板。。。");
+  console.log("开始抓取远端模板");
 
   // git clone 远端代码
   clone(
     "https://github.com/wxyyxc1992/create-spring-boot-app",
     ".tmp",
     {
-      checkout:'boilerplate'
+      checkout:'master'
     },
     function() {
       // 移动出模板文件
@@ -157,9 +157,17 @@ function createApp(name, type) {
       ];
 
       sourceSets.forEach(function(sourceSet) {
-        fs.ensureDirSync(sourceSet + "/wx.csba");
+        // 保证源文件存在
+        fs.ensureDirSync(sourceSet + "/wx/csba");
+        
+        var target = packageName.replace("\.","/");
+
         // 重命名根文件目录名
-        fs.moveSync(sourceSet + "/wx.csba", sourceSet + "/" + packageName);
+        fs.moveSync(sourceSet + "/wx/csba/", sourceSet + "/" + target);
+
+        // 移除源目录
+        fs.removeSync(sourceSet + "/wx");
+        
       });
     }
   );

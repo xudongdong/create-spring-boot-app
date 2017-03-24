@@ -35,14 +35,6 @@ allprojects {
     apply plugin: "com.arenagod.gradle.MybatisGenerator"
     apply plugin: "idea"
 
-
-    idea {
-        module {
-            inheritOutputDirs = false
-            outputDir = file("${buildDir}/classes/main/")
-        }
-    }
-
     // 仓库
     repositories {
 
@@ -112,7 +104,6 @@ allprojects {
             exclude(module: 'spring-boot-starter-tomcat')
             exclude group: "commons-logging", module: "commons-logging"
         }
-        compile "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
         compile group: "org.springframework.boot", name: "spring-boot-starter-actuator", version: springBootVersion
         compile group: "org.springframework.boot", name: "spring-boot-starter-jetty", version: springBootVersion
         compile group: "org.springframework.boot", name: "spring-boot-starter-jdbc", version: springBootVersion
@@ -126,6 +117,14 @@ allprojects {
         testCompile('org.springframework.boot:spring-boot-starter-test')
     }
 }
+
+idea {
+    module {
+        inheritOutputDirs = false
+        outputDir = file("$buildDir/classes/main/")
+    }
+}
+
 
 dependencies {
     compile project(':module:api')
