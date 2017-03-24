@@ -107,7 +107,7 @@ function createApp(name, type) {
     process.exit(1);
   }
 
-  console.log("开始创建新的 Spring Boot 应用： " + chalk.green(root) + "");
+  console.log("开始创建新的 Spring Boot 应用位于文件夹 " + chalk.green(root) + "");
 
   // 当前目录
   var originalDirectory = process.cwd();
@@ -121,7 +121,7 @@ function createApp(name, type) {
       ""
   );
 
-  console.log("开始抓取远端模板");
+  console.log("开始抓取远端模板 " + chalk.green("https://github.com/wxyyxc1992/create-spring-boot-app"));
 
   // git clone 远端代码
   clone(
@@ -174,6 +174,10 @@ function createApp(name, type) {
         fs.removeSync(sourceSet + "/wx");
         
       });
+
+      console.log("应用创建完毕 \n");
+      console.log("使用 " + chalk.green("cd " + appName) + " 进入项目文件夹");
+      console.log("使用 " + chalk.green("gradle :help") + " 查看可用命令");
     }
   );
 }

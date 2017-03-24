@@ -15,7 +15,7 @@ task help {
 
     doLast {
         println "使用 gradle :booRun 运行 Spring Boot 项目（这里的 : 表示从根模块开始运行）"
-        println "使用 gradle :api 打包 Jar"
+        println "使用 gradle :build 打包 Jar"
         println "使用 gradle task 查看所有任务"
     }
 
